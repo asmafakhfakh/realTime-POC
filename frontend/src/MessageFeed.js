@@ -12,22 +12,19 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 import { getMessages } from "./store/actions/messages";
-const MessageFeed = (props) => {
+const MessageFeed = () => {
   const messages = useSelector(state => state.msg.messages);
   console.log('messages123', messages);
   const dispatch = useDispatch()
-  const [chatMessage, setChatMessage] = useState("");
-  // const [chatMessages, setChatMessages] = useState([]);
+  const [chatMessage, setChatMessage] = useState({content : ''});
   var socket = io("http://127.0.0.1:3000");
   useEffect(() => {
     dispatch(getMessages())
-  }
-    ,
+  },
     []
   );
   submitChatMessage = async () => {
-    await socket.emit('chat message', chatMessage);
-    // get message
+    await socket.emit('chat message', chatMessage.content);
     setChatMessage('');
   }
   return (
@@ -35,11 +32,9 @@ const MessageFeed = (props) => {
       <TextInput
         style={{ height: 40, borderWidth: 3, top: 100 }}
         autoCorrect={false}
-        value={chatMessage}
+        value={chatMessage.content}
         onSubmitEditing={() => submitChatMessage()}
-        onChangeText={chatMessage => {
-          setChatMessage(chatMessage);
-        }}
+        onChangeText={(text) => setChatMessage({content:text})}
       />
       {messages && messages.map(message => (
         <Text key={Math.random()} style={{ height: 50, borderWidth: 0.5, top: 100 }}>{message}</Text>
