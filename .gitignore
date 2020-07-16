@@ -64,3 +64,4 @@ frontend/ios/Pods/
 *.hprof
 
 .env
+/backend/node_modules
