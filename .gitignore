@@ -65,3 +65,4 @@ frontend/ios/Pods/
 
 .env
 /backend/node_modules
+/web/node_modules

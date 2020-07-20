@@ -16,15 +16,15 @@ const MessageFeed = () => {
   const messages = useSelector(state => state.msg.messages);
   console.log('messages123', messages);
   const dispatch = useDispatch()
-  const [chatMessage, setChatMessage] = useState({content : ''});
-  var socket = io("http://127.0.0.1:3000");
+  const [chatMessage, setChatMessage] = useState('');
+  var socket = io("http://127.0.0.1:3010");
   useEffect(() => {
     dispatch(getMessages())
   },
     []
   );
   submitChatMessage = async () => {
-    await socket.emit('chat message', chatMessage.content);
+    await socket.emit('chat message', {content: chatMessage, sender:"user client"});
     setChatMessage('');
   }
   return (
@@ -34,7 +34,7 @@ const MessageFeed = () => {
         autoCorrect={false}
         value={chatMessage.content}
         onSubmitEditing={() => submitChatMessage()}
-        onChangeText={(text) => setChatMessage({content:text})}
+        onChangeText={(text) => setChatMessage(text)}
       />
       {messages && messages.map(message => (
         <Text key={Math.random()} style={{ height: 50, borderWidth: 0.5, top: 100 }}>{message}</Text>
