@@ -5,17 +5,32 @@ app.use(bodyParser.json());
 const server = require("http").createServer(app);
 const io = require("socket.io").listen(server);
 const mongoose = require("mongoose");
-const config=require('./config');
-const cors=require('cors');
+const config = require('./config');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
-const communityChat = require('./models/communityChat.model')
+const communityChat = require('./models/communityChat.model');
+const user = require("./models/chatUser.model");
 
-app.get('/oldmessages/community', cors(), (req,res)=>{
+app.get('/oldmessages/community', cors(), (req, res) => {
     communityChat.find({})
-    .exec((err,docs)=>{
-        err? res.end() : res.send(docs)
+        .exec((err, docs) => {
+            err ? res.end() : res.send(docs)
+        });
+});
+app.options('/signin', cors())
+app.post('/signin', cors(), (req, res) => {
+    user.findOne({
+        username: req.body.username,
+        password: req.body.password
+    }).exec((err, doc) => {
+        if (!doc) {
+            res.status(401).send("Invalid credentials")
+        } else {
+            let token = jwt.sign({ userid: doc._id, username: doc.username }, config.SECRET_KEY);
+            res.send(token)
+        };
     });
-    // communityChat.deleteMany({})
 });
 
 
@@ -44,10 +59,10 @@ mongoose.connect(config.MONGO_URL, {
     useUnifiedTopology: true,
     // useCreateIndex: true,
 })
-.then(db => {
-    console.log("connected correctly to DB");
-});
+    .then(db => {
+        console.log("connected correctly to DB");
+    });
 
-server.listen(config.PORT, 
+server.listen(config.PORT,
     () => console.log("server running on port:" + config.PORT)
 );

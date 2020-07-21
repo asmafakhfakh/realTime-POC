@@ -3,8 +3,7 @@ import { GET_OLD_MESSAGES, ADD_NEW_MESSAGE } from '../constants'
 
 const Initial_State = {
     messages: [],
-}
-
+};
 
 export default function (state = Initial_State, action) {
     switch (action.type) {
@@ -19,5 +18,5 @@ export default function (state = Initial_State, action) {
                 messages: state.messages.concat(action.payload)
             };
         default: return state;
-    }
-}
+    };
+};

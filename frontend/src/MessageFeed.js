@@ -6,25 +6,26 @@
  * @flow strict-local
  */
 import React, { useState, useEffect } from 'react';
-import {
-  View, Text, TextInput, StyleSheet
-} from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
-import { getMessages } from "./store/actions/messages";
+import { getMessages, getOldMessages } from "./store/actions/messages";
+import config from '../config';
+
+
 const MessageFeed = () => {
-  const messages = useSelector(state => state.msg.messages);
-  console.log('messages123', messages);
+  const messages = useSelector(state => state.messageReducer.messages);
   const dispatch = useDispatch()
   const [chatMessage, setChatMessage] = useState('');
-  var socket = io("http://127.0.0.1:3010");
+  var socket = io(config.URL);
   useEffect(() => {
+    dispatch(getOldMessages())
     dispatch(getMessages())
   },
     []
   );
   submitChatMessage = async () => {
-    await socket.emit('chat message', {content: chatMessage, sender:"user client"});
+    await socket.emit('chat message', { content: chatMessage, sender: "user client" });
     setChatMessage('');
   }
   return (
@@ -37,7 +38,7 @@ const MessageFeed = () => {
         onChangeText={(text) => setChatMessage(text)}
       />
       {messages && messages.map(message => (
-        <Text key={Math.random()} style={{ height: 50, borderWidth: 0.5, top: 100 }}>{message}</Text>
+        <Text key={Math.random()} style={{ height: 50, borderWidth: 0.5, top: 100 }}>{message.content}</Text>
       ))
       }
     </View>

@@ -13,9 +13,8 @@ export const getMessages = () => {
                 type: ADD_NEW_MESSAGE,
                 payload: msg
             });
-            console.log("getMessages", msg);
-        })
-    }
+        });
+    };
 };
 export const getOldMessages = () => {
     return dispatch =>
@@ -28,5 +27,5 @@ export const getOldMessages = () => {
             })
             .catch(err => {
                 console.log(err);
-            })
-}
+            });
+};

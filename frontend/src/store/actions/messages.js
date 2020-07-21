@@ -1,21 +1,31 @@
 
 import io from "socket.io-client";
-import {ADD_NEW_MESSAGE} from '../constants'
+import axios from 'axios';
+import { GET_OLD_MESSAGES, ADD_NEW_MESSAGE } from '../constants';
+import config from '../../../config';
 
 
-export const chatMessages = (payload) => {
-    return {
-        type : ADD_NEW_MESSAGE,
-        payload
-    }
-}
-export const getMessages = () =>{
-    var socket = io("http://127.0.0.1:3010");
-return dispatch => {
+export const getMessages = () => {
+    var socket = io(config.URL);
+    return dispatch => {
         socket.on("chat message", msg => {
-            dispatch(chatMessages(msg.content))
-        })
-      
-    }
-
-}
+            dispatch({
+                type: ADD_NEW_MESSAGE,
+                payload: msg
+            });
+        });
+    };
+};
+export const getOldMessages = () => {
+    return dispatch =>
+        axios.get(`${config.URL}/oldmessages/community`)
+            .then(res => {
+                dispatch({
+                    type: GET_OLD_MESSAGES,
+                    payload: res.data
+                });
+            })
+            .catch(err => {
+                console.log(err);
+            });
+};
