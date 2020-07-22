@@ -10,7 +10,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "axios": "^0.19.2",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-redux": "^7.2.0",
