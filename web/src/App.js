@@ -11,8 +11,8 @@ function App() {
   }
   return (
     <div className="todo-app">
-      <h1>Chat app</h1>
       {tokenCookie && <button onClick={handleSigOut}>sign out</button>}
+      <h1>Chat app</h1>
       {tokenCookie ? <MessageFeed /> : <SignIn />}
     </div>
   );
