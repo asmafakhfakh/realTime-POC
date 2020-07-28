@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
-import messageReducer from './messageReducer'
+import messageReducer from './messageReducer';
+import authUserReducer from './authUserReducer';
 
 const rootReducer = combineReducers({
-     msg : messageReducer,
+     messageReducer,
+     authUserReducer,
 });
-  export default rootReducer
+export default rootReducer;
