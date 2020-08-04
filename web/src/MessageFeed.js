@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 import { getMessages, getOldMessages } from "./store/actions/messageActions";
-import { authenticateUser } from './store/actions/authUserActions'
+import { authenticateUser } from './store/actions/authUserActions';
 import config from './config';
 
 const MessageFeed = () => {
