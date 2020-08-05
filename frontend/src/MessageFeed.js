@@ -39,7 +39,7 @@ const MessageFeed = ({ navigation }) => {
       await AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
         .then(async () => console.log("storage cleared", await AsyncStorage.getItem('token')));
-      // navigation.navigate({ name: "SignIn" })
+      navigation.navigate({ name: "SignIn" })
     } catch (error) {
       console.log('AsyncStorage Error: ' + error.message);
     };

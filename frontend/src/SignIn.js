@@ -10,7 +10,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
-const SignIn = () => {
+const SignIn = ({navigation}) => {
     const [usernameInput, setusernameInput] = useState('');
     const [passwordInput, setpasswordInput] = useState('');
 
@@ -25,6 +25,7 @@ const SignIn = () => {
                 saveData(res.data);
                 setusernameInput('');
                 setpasswordInput('');
+                navigation.navigate('MessageFeed')
             })
             .catch(err => {
                 console.log(err);
@@ -39,14 +40,14 @@ const SignIn = () => {
                 style={styles.TextInput}
                 value={usernameInput}
                 autoCorrect={false}
-                onChangeText={(text) => setusernameInput(text)}
+                onChangeText={(text) => setusernameInput(text.toLowerCase())}
             />
             <TextInput
                 placeholder="password"
                 style={styles.TextInput}
                 value={passwordInput}
                 autoCorrect={false}
-                onChangeText={(text) => setpasswordInput(text)}
+                onChangeText={(text) => setpasswordInput(text.toLowerCase())}
             />
             <Button color="#841584" title={'submit'} onPress={() => handleSubmit()} />
 
