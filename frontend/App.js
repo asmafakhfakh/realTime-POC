@@ -4,17 +4,20 @@ import SignIn from './src/SignIn';
 import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View } from 'react-native';
+import { authenticateUser } from './src/store/actions/authUserActions';
+import { useDispatch, useSelector } from "react-redux";
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [userToken, setuserToken] = useState('');
+  const dispatch = useDispatch();
+  const authUser = useSelector(state => state.authUserReducer.authUser);
 
   const readData = async () => {
     var tok = await AsyncStorage.getItem('token')
     if (tok !== null) {
-      setuserToken(tok)
+      console.log("token from asyncstorage", tok);
+      dispatch(authenticateUser(tok))
     }
   };
   useEffect(() => {
@@ -23,11 +26,18 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {console.log('userToken', userToken),
-          userToken ?
-            <Stack.Screen name='MessageFeed' component={MessageFeed} />
-            :
-            <Stack.Screen name='SignIn' component={SignIn} />
+        {console.log('authUser', authUser),
+          Object.keys(authUser).length === 0 ?
+            (
+              <>
+                <Stack.Screen name='SignIn' component={SignIn} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name='MessageFeed' component={MessageFeed} />
+              </>
+            )
+
         }
       </Stack.Navigator>
     </NavigationContainer>

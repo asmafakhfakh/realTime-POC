@@ -10,46 +10,48 @@ import { View, Text, TextInput, StyleSheet, SafeAreaView, ScrollView, Button } f
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 import { getMessages, getOldMessages } from "./store/actions/messageActions";
-import { authenticateUser } from './store/actions/authUserActions';
 import config from '../config';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const MessageFeed = ({ navigation }) => {
-  console.log('navigation', navigation);
 
   const messages = useSelector(state => state.messageReducer.messages);
   const authUser = useSelector(state => state.authUserReducer.authUser);
   const dispatch = useDispatch()
   const [chatMessage, setChatMessage] = useState('');
   var socket = io(config.URL);
+
   useEffect(() => {
-    dispatch(authenticateUser())
     dispatch(getOldMessages())
     dispatch(getMessages())
   },
     []
   );
+
   submitChatMessage = async () => {
-    await socket.emit('chat message', { content: chatMessage, sender: "user client" });
+    await socket.emit('chat message', { content: chatMessage, sender: authUser.username });
     setChatMessage('');
-  }
+  };
+
   const logout = async () => {
+    alert('signout')
     try {
       await AsyncStorage.getAllKeys()
-        .then(keys => AsyncStorage.multiRemove(keys));
-      navigation.navigate({ name: "SignIn" })
+        .then(keys => AsyncStorage.multiRemove(keys))
+        .then(async () => console.log("storage cleared", await AsyncStorage.getItem('token')));
+      // navigation.navigate({ name: "SignIn" })
     } catch (error) {
       console.log('AsyncStorage Error: ' + error.message);
-    }
-  }
+    };
+  };
+
   handleSubmit = () => {
-    // clearToken()
     logout()
-    // removeItemValue()
-  }
+  };
+
   return (
     <SafeAreaView style={styles.SafeAreaView}>
-      {/* <Text style={{padding: 10}}>{`connected user: ${authUser.username}`}</Text> */}
+      <Text style={{ padding: 10 }}>{`connected user: ${authUser.username}`}</Text>
       <Button color="#841584" title={'signout'} onPress={() => handleSubmit()} />
       <TextInput
         style={styles.TextInput}
