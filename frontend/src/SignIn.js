@@ -8,35 +8,33 @@ import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import config from '../config';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import {authenticateUser} from './store/actions/authUserActions';
+import { authenticateUser } from './store/actions/authUserActions';
 import { useDispatch, useSelector } from "react-redux";
 
 
-const SignIn = ({navigation}) => {
+const SignIn = () => {
     const dispatch = useDispatch();
     const [usernameInput, setusernameInput] = useState('');
     const [passwordInput, setpasswordInput] = useState('');
 
     const saveData = async (token) => {
         await AsyncStorage.setItem('token', token)
-        console.log("storage", await AsyncStorage.getItem('token'));
     }
 
     handleSubmit = () => {
-        alert('sigin')
         axios.post(`${config.URL}/signin`, { username: usernameInput, password: passwordInput })
             .then(res => {
                 saveData(res.data);
+                dispatch(authenticateUser(res.data));
                 setusernameInput('');
                 setpasswordInput('');
-                dispatch({ type: 'STORE_TOKEN', payload: res.data });
-                dispatch(authenticateUser(res.data))
-                navigation.navigate('MessageFeed')
+                alert('sigin')
             })
             .catch(err => {
+                alert('sigin failed')
                 console.log(err);
             });
-        
+
     }
 
     return (

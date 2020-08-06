@@ -10,6 +10,7 @@ import { View, Text, TextInput, StyleSheet, SafeAreaView, ScrollView, Button } f
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 import { getMessages, getOldMessages } from "./store/actions/messageActions";
+import { signOut } from "./store/actions/authUserActions";
 import config from '../config';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -18,7 +19,7 @@ const MessageFeed = ({ navigation }) => {
   const messages = useSelector(state => state.messageReducer.messages);
   const authUser = useSelector(state => state.authUserReducer.authUser);
   const dispatch = useDispatch()
-  const [chatMessage, setChatMessage] = useState('');
+  const [chatMessage, setChatMessage] = useState({content:'',sender:''});
   var socket = io(config.URL);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const MessageFeed = ({ navigation }) => {
 
   submitChatMessage = async () => {
     await socket.emit('chat message', { content: chatMessage, sender: authUser.username });
-    setChatMessage('');
+    setChatMessage({content:'',sender:''});
   };
 
   const logout = async () => {
@@ -38,9 +39,7 @@ const MessageFeed = ({ navigation }) => {
     try {
       await AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
-        .then(async () => console.log("storage cleared", await AsyncStorage.getItem('token')))
-        .then(()=>dispatch({type:'SIGN_OUT'}))
-      // navigation.navigate({ name: "SignIn" })
+        .then(() => dispatch(signOut()))
     } catch (error) {
       console.log('AsyncStorage Error: ' + error.message);
     };
@@ -55,9 +54,9 @@ const MessageFeed = ({ navigation }) => {
       {
         authUser && authUser.username && <Text style={{ padding: 10 }}>{`connected user: ${authUser.username}`}</Text>
       }
-      
       <Button color="#841584" title={'signout'} onPress={() => handleSubmit()} />
       <TextInput
+      placeholder="Type a message ..."
         style={styles.TextInput}
         autoCorrect={false}
         value={chatMessage.content}

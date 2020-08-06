@@ -11,14 +11,13 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const dispatch = useDispatch();
-  const authUser = useSelector(state => state.authUserReducer.authUser);
-  const reduxToken = useSelector(state => state.authUserReducer.reduxToken);
+  const authUserReducer = useSelector(state => state.authUserReducer);
 
   const storeToken = async () => {
     let userToken;
     try {
       userToken = await AsyncStorage.getItem('token');
-      userToken && dispatch({ type: 'STORE_TOKEN', payload: userToken });
+      userToken && dispatch(authenticateUser(userToken));
     } catch (e) {
       console.log(e);
     };
@@ -32,7 +31,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {
-          !reduxToken ?
+          !authUserReducer.reduxToken ?
             <Stack.Screen name='SignIn' component={SignIn} />
             :
             <Stack.Screen name='MessageFeed' component={MessageFeed} />

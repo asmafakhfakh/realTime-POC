@@ -1,4 +1,4 @@
-import { AUTHENTICATE_USER } from '../constants'
+import { AUTHENTICATE_USER, SIGN_OUT } from '../constants'
 
 
 const Initial_State = {
@@ -10,18 +10,15 @@ export default function (state = Initial_State, action) {
         case AUTHENTICATE_USER:
             return {
                 ...state,
-                authUser: action.payload
+                reduxToken: action.payload.token,
+                authUser: action.payload.decoded
             };
-        case 'STORE_TOKEN':
-            return{
-                ...state,
-                reduxToken: action.payload
-            };
-        case 'SIGN_OUT':
+        case SIGN_OUT:
             return {
                 reduxToken: null,
-                authUser:null
+                authUser: null
             }
-        default: return state;
+        default:
+            return state;
     };
 };
