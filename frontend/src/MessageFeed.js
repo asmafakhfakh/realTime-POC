@@ -38,8 +38,9 @@ const MessageFeed = ({ navigation }) => {
     try {
       await AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
-        .then(async () => console.log("storage cleared", await AsyncStorage.getItem('token')));
-      navigation.navigate({ name: "SignIn" })
+        .then(async () => console.log("storage cleared", await AsyncStorage.getItem('token')))
+        .then(()=>dispatch({type:'SIGN_OUT'}))
+      // navigation.navigate({ name: "SignIn" })
     } catch (error) {
       console.log('AsyncStorage Error: ' + error.message);
     };
@@ -51,7 +52,10 @@ const MessageFeed = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
-      <Text style={{ padding: 10 }}>{`connected user: ${authUser.username}`}</Text>
+      {
+        authUser && authUser.username && <Text style={{ padding: 10 }}>{`connected user: ${authUser.username}`}</Text>
+      }
+      
       <Button color="#841584" title={'signout'} onPress={() => handleSubmit()} />
       <TextInput
         style={styles.TextInput}

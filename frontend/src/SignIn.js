@@ -8,14 +8,18 @@ import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import config from '../config';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import {authenticateUser} from './store/actions/authUserActions';
+import { useDispatch, useSelector } from "react-redux";
 
 
 const SignIn = ({navigation}) => {
+    const dispatch = useDispatch();
     const [usernameInput, setusernameInput] = useState('');
     const [passwordInput, setpasswordInput] = useState('');
 
     const saveData = async (token) => {
         await AsyncStorage.setItem('token', token)
+        console.log("storage", await AsyncStorage.getItem('token'));
     }
 
     handleSubmit = () => {
@@ -25,6 +29,8 @@ const SignIn = ({navigation}) => {
                 saveData(res.data);
                 setusernameInput('');
                 setpasswordInput('');
+                dispatch({ type: 'STORE_TOKEN', payload: res.data });
+                dispatch(authenticateUser(res.data))
                 navigation.navigate('MessageFeed')
             })
             .catch(err => {

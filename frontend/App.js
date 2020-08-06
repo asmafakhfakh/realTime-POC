@@ -12,35 +12,31 @@ const Stack = createStackNavigator();
 const App = () => {
   const dispatch = useDispatch();
   const authUser = useSelector(state => state.authUserReducer.authUser);
+  const reduxToken = useSelector(state => state.authUserReducer.reduxToken);
 
-
-  const [token, setToken] = useState('');
-  console.log('token', token);
-
-  const [intialRoute, setintialRoute] = useState('');
-
-
-  const readData = async () => {
-    var tok = await AsyncStorage.getItem('token')
-    if (tok !== null) {
-      console.log("token from asyncstorage", tok);
-      setToken(tok);
-      dispatch(authenticateUser(tok))
-    }
+  const storeToken = async () => {
+    let userToken;
+    try {
+      userToken = await AsyncStorage.getItem('token');
+      userToken && dispatch({ type: 'STORE_TOKEN', payload: userToken });
+    } catch (e) {
+      console.log(e);
+    };
   };
+
   useEffect(() => {
-    console.log('useEffectApp')
-    readData();
-  if(token == '')
-  setintialRoute('SignIn') 
-  else
-  setintialRoute('MessageFeed') 
+    storeToken()
   }, []);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={intialRoute }>
-        <Stack.Screen name='SignIn' component={SignIn} />
-        <Stack.Screen name='MessageFeed' component={MessageFeed} />
+      <Stack.Navigator>
+        {
+          !reduxToken ?
+            <Stack.Screen name='SignIn' component={SignIn} />
+            :
+            <Stack.Screen name='MessageFeed' component={MessageFeed} />
+        }
       </Stack.Navigator>
     </NavigationContainer>
   );
