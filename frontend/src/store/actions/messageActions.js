@@ -15,9 +15,9 @@ export const getMessages = () => {
         });
     };
 };
-export const getOldMessages = () => {
+export const getOldMessages = (type, correspondant) => {
     return dispatch =>
-        axios.get(`${config.URL}/oldmessages/community`)
+        axios.get(`${config.URL}/oldmessages/${type}/${correspondant}`)
             .then(res => {
                 dispatch({
                     type: GET_OLD_MESSAGES,

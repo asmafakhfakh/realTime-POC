@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MessageFeed from './src/MessageFeed';
 import SignIn from './src/SignIn';
+import Home from './src/Home'
 import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -34,7 +35,10 @@ const App = () => {
           !authUserReducer.reduxToken ?
             <Stack.Screen name='SignIn' component={SignIn} />
             :
-            <Stack.Screen name='MessageFeed' component={MessageFeed} />
+            <>
+              <Stack.Screen name='Home' component={Home} />
+              <Stack.Screen name='MessageFeed' component={MessageFeed} />
+            </>
         }
       </Stack.Navigator>
     </NavigationContainer>

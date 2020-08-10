@@ -14,16 +14,15 @@ import { signOut } from "./store/actions/authUserActions";
 import config from '../config';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const MessageFeed = ({ navigation }) => {
-
+const MessageFeed = ({ route, navigation }) => {
+  const dispatch = useDispatch()
   const messages = useSelector(state => state.messageReducer.messages);
   const authUser = useSelector(state => state.authUserReducer.authUser);
-  const dispatch = useDispatch()
   const [chatMessage, setChatMessage] = useState({content:'',sender:''});
   var socket = io(config.URL);
 
   useEffect(() => {
-    dispatch(getOldMessages())
+    dispatch(getOldMessages(route.params.type, route.params.correspondant))
     dispatch(getMessages())
   },
     []
@@ -55,6 +54,7 @@ const MessageFeed = ({ navigation }) => {
         authUser && authUser.username && <Text style={{ padding: 10 }}>{`connected user: ${authUser.username}`}</Text>
       }
       <Button color="#841584" title={'signout'} onPress={() => handleSubmit()} />
+      <Text style={styles.type}> {route.params.type==="community"? "Community chats": "Conversation with "+route.params.correspondant.username} </Text>
       <TextInput
       placeholder="Type a message ..."
         style={styles.TextInput}
@@ -94,6 +94,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 0.5,
     // top: 100
+  },
+  type:{
+    color:"#FF0000"
   }
 });
 export default MessageFeed;

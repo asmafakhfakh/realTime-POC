@@ -12,11 +12,14 @@ const jwt = require('jsonwebtoken');
 const communityChat = require('./models/communityChat.model');
 const user = require("./models/chatUser.model");
 
-app.get('/oldmessages/community', cors(), (req, res) => {
+app.get('/oldmessages/:type/:correspondant', cors(), (req, res) => {
+    req.params.type==="community" ? 
     communityChat.find({})
         .exec((err, docs) => {
             err ? res.end() : res.send(docs)
-        });
+        })
+    :
+    res.send([])
 });
 app.options('/signin', cors())
 app.post('/signin', cors(), (req, res) => {
@@ -32,7 +35,12 @@ app.post('/signin', cors(), (req, res) => {
         };
     });
 });
-
+app.get('/allusers', cors(), (req, res) => {
+    user.find({})
+        .exec((err, docs) => {
+            err ? res.end() : res.send(docs.map(el=>({_id:el._id, username:el.username})))
+        });
+});
 
 io.on("connection", socket => {
     console.log("user connected", socket.id);

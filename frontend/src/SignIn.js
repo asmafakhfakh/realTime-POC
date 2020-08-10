@@ -54,7 +54,6 @@ const SignIn = () => {
                 onChangeText={(text) => setpasswordInput(text.toLowerCase())}
             />
             <Button color="#841584" title={'submit'} onPress={() => handleSubmit()} />
-
         </View>
     );
 };
